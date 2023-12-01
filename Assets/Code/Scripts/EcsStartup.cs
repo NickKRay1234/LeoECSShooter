@@ -1,45 +1,65 @@
 using Leopotam.Ecs;
 using UnityEngine;
 
-namespace Client {
-    sealed class EcsStartup : MonoBehaviour {
-        EcsWorld _world;
-        EcsSystems _systems;
+namespace Shooter {
+    internal sealed class EcsStartup : MonoBehaviour {
 
-        void Start () {
-            // void can be switched to IEnumerator for support coroutines.
+        public StaticData configuration;
+        public SceneData sceneData;
+        private EcsWorld _ecsWorld;
+        private EcsSystems _updateSystems;
+        private EcsSystems _fixedUpdateSystems;
+
+
+        private void Start () 
+        {
+            _ecsWorld = new EcsWorld ();
+            _updateSystems = new EcsSystems (_ecsWorld);
+            _fixedUpdateSystems = new EcsSystems(_ecsWorld);
+            RuntimeData runtimeData = new RuntimeData();
             
-            _world = new EcsWorld ();
-            _systems = new EcsSystems (_world);
+            
 #if UNITY_EDITOR
-            Leopotam.Ecs.UnityIntegration.EcsWorldObserver.Create (_world);
-            Leopotam.Ecs.UnityIntegration.EcsSystemsObserver.Create (_systems);
+            Leopotam.Ecs.UnityIntegration.EcsWorldObserver.Create (_ecsWorld);
+            Leopotam.Ecs.UnityIntegration.EcsSystemsObserver.Create (_updateSystems);
 #endif
-            _systems
-                // register your systems here, for example:
-                // .Add (new TestSystem1 ())
-                // .Add (new TestSystem2 ())
-                
-                // register one-frame components (order is important), for example:
-                // .OneFrame<TestComponent1> ()
-                // .OneFrame<TestComponent2> ()
-                
-                // inject service instances here (order doesn't important), for example:
-                // .Inject (new CameraService ())
-                // .Inject (new NavMeshSupport ())
-                .Init ();
+
+            _updateSystems
+                .Add(new PlayerInitSystem())
+                .Add(new PlayerInputSystem())
+                .Add(new PlayerAnimationSystem())
+                .Add(new PlayerRotationSystem())
+                .Inject(configuration)
+                .Inject(sceneData)
+                .Inject(runtimeData);
+
+            _fixedUpdateSystems
+                .Add(new PlayerMoveSystem())
+                .Inject(configuration)
+                .Inject(sceneData)
+                .Inject(runtimeData);
+            
+            _updateSystems.Init();
+            _fixedUpdateSystems.Init();
         }
 
-        void Update () {
-            _systems?.Run ();
+        private void Update () {
+            _updateSystems?.Run ();
+        }
+        
+        private void FixedUpdate()
+        {
+            _fixedUpdateSystems?.Run();
         }
 
         void OnDestroy () {
-            if (_systems != null) {
-                _systems.Destroy ();
-                _systems = null;
-                _world.Destroy ();
-                _world = null;
+            if (_updateSystems != null) {
+                _updateSystems.Destroy ();
+                _fixedUpdateSystems?.Destroy();
+                _fixedUpdateSystems = null;
+                _updateSystems = null;
+                _ecsWorld.Destroy ();
+                _ecsWorld = null;
             }
         }
     }
