@@ -26,15 +26,22 @@ namespace Shooter {
 
             _updateSystems
                 .Add(new PlayerInitSystem())
+                .OneFrame<TryReload>()
                 .Add(new PlayerInputSystem())
-                .Add(new PlayerAnimationSystem())
                 .Add(new PlayerRotationSystem())
+                .Add(new PlayerAnimationSystem())
+                .Add(new WeaponShootSystem())
+                .Add(new SpawnProjectileSystem())
+                .Add(new ProjectileMoveSystem())
+                .Add(new ProjectileHitSystem())
+                .Add(new ReloadingSystem())
                 .Inject(configuration)
                 .Inject(sceneData)
                 .Inject(runtimeData);
 
             _fixedUpdateSystems
                 .Add(new PlayerMoveSystem())
+                .Add(new CameraFollowSystem())
                 .Inject(configuration)
                 .Inject(sceneData)
                 .Inject(runtimeData);
@@ -53,14 +60,8 @@ namespace Shooter {
         }
 
         void OnDestroy () {
-            if (_updateSystems != null) {
-                _updateSystems.Destroy ();
-                _fixedUpdateSystems?.Destroy();
-                _fixedUpdateSystems = null;
-                _updateSystems = null;
-                _ecsWorld.Destroy ();
-                _ecsWorld = null;
-            }
+            _ecsWorld.Destroy();
+            _updateSystems.Destroy();
         }
     }
 }

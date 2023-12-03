@@ -2086,6 +2086,8 @@ GameObject:
   - component: {fileID: 7673487250857332701}
   - component: {fileID: 4090924819399479395}
   - component: {fileID: 5449727851075464597}
+  - component: {fileID: 2502538275935005026}
+  - component: {fileID: -176390134350259526}
   m_Layer: 0
   m_Name: HPCharacter
   m_TagString: Untagged
@@ -2185,6 +2187,38 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &2502538275935005026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7673487251499248760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e99340cc1a746aaaf2a8096f78c4193, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 4470839306872686250, guid: d72a14046f88f414fa815436d011765f, type: 3}
+  projectileSocket: {fileID: 7673487251499544602}
+  projectileSpeed: 20
+  projectileRadius: 5
+  weaponDamage: 54
+  currentInMagazine: 30
+  maxInMagazine: 30
+  totalAmmo: 180
+--- !u!114 &-176390134350259526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7673487251499248760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add6185a486d4a4bab811580a71d298f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7673487251499248762
 GameObject:
   m_ObjectHideFlags: 0
